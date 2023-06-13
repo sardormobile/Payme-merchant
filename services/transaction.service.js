@@ -76,14 +76,10 @@ class TransactionService {
     await this.checkPerformTransaction(params, id);
 
     let transaction = await transactionRepo.getById(params.id);
-    console.log('######$$$$$_2:', transaction)
     if (transaction) {
-      console.log('######$$$$$_T1:', transaction)
       if (transaction.state !== TransactionState.Pending) {
-        console.log('######$$$$$_44:', transaction)
         throw new TransactionError(PaymeError.CantDoOperation, id);
       }
-      console.log('######$$$$$_T2:', transaction)
 
       const currentTime = Date.now();
 
@@ -126,7 +122,6 @@ class TransactionService {
       create_time: time,
     });
     
-    console.log('######$$$$$_@:', newTransaction)
 
     return {
       transaction: newTransaction.id,
@@ -158,7 +153,6 @@ class TransactionService {
 
     const expirationTime = (currentTime - transaction.create_time) / 60000 < 12; // 12m
 
-    console.log('###########_expirationTime:',expirationTime)
     if (!expirationTime) {
       await transactionRepo.updateById(params.id, {
         state: TransactionState.PendingCanceled,
@@ -202,6 +196,12 @@ class TransactionService {
       transaction: transaction.id,
       state: -Math.abs(transaction.state),
     };
+  }
+  async getStatement(params, id) {
+    const result = await  transactionRepo.getFilterByTime(params.from, params.to);
+    return {
+          transactions : result
+        }
   }
 }
 

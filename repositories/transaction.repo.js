@@ -16,6 +16,11 @@ class TransactionRepo {
   async getByFilter(filter) {
     return this.model.findOne(filter);
   }
+  
+  async getFilterByTime(fromDate, toDate) {
+    return this.model.find({ create_time: { $gte: fromDate, $lt: toDate } })
+    .sort({ create_time: 0 }); 
+  }
 
   async updateById(transactionId, update) {
     return this.model.findOneAndUpdate({id:transactionId}, update);

@@ -11,7 +11,7 @@ class TransactionController {
     try {
       const { method, params, id } = req.body;
 
-      console.log('$$$$$$$$$$$$$$$$$$$$$$$$: ', method)
+      //console.log('$$$$$$$$$$$$$$$$$$$$$$$$: ', method)
       switch (method) {
         case PaymeMethod.CheckPerformTransaction: {
           await transactionService.checkPerformTransaction(params, id);
@@ -37,6 +37,11 @@ class TransactionController {
           const result = await transactionService.cancelTransaction(params, id);
 
           return res.json({ result, id });
+        }
+        case PaymeMethod.GetStatement: {
+          const result = await transactionService.getStatement(params, id);
+
+          return res.json({result, id });
         }
       }
     } catch (err) {
